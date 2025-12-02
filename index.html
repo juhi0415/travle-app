@@ -10,6 +10,7 @@
 <div class="container">
     <h1>온라인 여행비용 계산기</h1>
 
+    <!-- 홈 화면 -->
     <div id="home-screen">
         <div class="totals">
             <p id="total-krw">KRW 총액: 0원</p>
@@ -21,6 +22,7 @@
         <button onclick="showList('JPY')">JPY만 보기</button>
     </div>
 
+    <!-- 지출 추가 화면 -->
     <div id="add-screen" class="hidden">
         <h2>지출 추가 / 수정</h2>
         <input id="amount" type="number" placeholder="금액">
@@ -34,6 +36,7 @@
         <button onclick="goHome()">뒤로가기</button>
     </div>
 
+    <!-- 내역 화면 -->
     <div id="list-screen" class="hidden">
         <h2>지출 내역</h2>
         <div id="date-filter">
@@ -46,7 +49,7 @@
     </div>
 </div>
 
-<!-- 모듈 방식 Firebase + app.js -->
+<!-- app.js를 모듈 방식으로 로드 -->
 <script type="module" src="app.js"></script>
 </body>
 </html>
