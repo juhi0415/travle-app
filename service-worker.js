@@ -1,11 +1,11 @@
 const CACHE_NAME = 'travel-app-cache-v1';
 const FILES_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/app.js',
-  '/manifest.json',
-  '/service-worker.js'
+  '/travle-app/',
+  '/travle-app/index.html',
+  '/travle-app/style.css',
+  '/travle-app/app.js',
+  '/travle-app/manifest.json',
+  '/travle-app/service-worker.js'
 ];
 
 self.addEventListener('install', event => {
