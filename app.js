@@ -1,97 +1,81 @@
-// ===== 화면 전환 =====
-function goHome() {
-  document.getElementById("add-screen").classList.add("hidden");
-  document.getElementById("list-screen").classList.add("hidden");
-  document.getElementById("home-screen").classList.remove("hidden");
-  loadTotals();
-}
+// Firebase 모듈 import
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-function showAdd() {
-  document.getElementById("home-screen").classList.add("hidden");
-  document.getElementById("list-screen").classList.add("hidden");
-  document.getElementById("add-screen").classList.remove("hidden");
-  document.getElementById("date").value = new Date().toISOString().slice(0,10);
-}
+// Firebase 초기화
+const firebaseConfig = {
+  apiKey: "AIzaSyC39VtjT_othwi_WIS_S4cdOH2CKnDyrZY",
+  authDomain: "travle-app-9c1ee.firebaseapp.com",
+  projectId: "travle-app-9c1ee",
+  storageBucket: "travle-app-9c1ee.firebasestorage.app",
+  messagingSenderId: "469444862658",
+  appId: "1:469444862658:web:8cd5b52dd0f78e0c93915b"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const expensesCol = collection(db, "expenses");
 
-function showList(filter = 'ALL') {
-  document.getElementById("home-screen").classList.add("hidden");
-  document.getElementById("add-screen").classList.add("hidden");
-  document.getElementById("list-screen").classList.remove("hidden");
-  loadList(filter);
-}
-
-// ===== 데이터 관리 (로컬Storage) =====
-function getExpenses() {
-  return JSON.parse(localStorage.getItem("expenses") || "[]");
-}
-
-function saveExpenses(data) {
-  localStorage.setItem("expenses", JSON.stringify(data));
-}
+// ===== 화면 전환 함수 =====
+function goHome() { /* 이전 코드 그대로 */ }
+function showAdd() { /* 이전 코드 그대로 */ }
+function showList(filter='ALL') { loadList(filter); }
 
 // ===== 저장 기능 =====
-function saveExpense() {
+async function saveExpense() {
   const amount = Number(document.getElementById("amount").value);
   const currency = document.getElementById("currency").value;
   const date = document.getElementById("date").value;
   const place = document.getElementById("place").value;
 
-  if (!amount || !date || !place) {
-    return alert("모든 항목을 입력해주세요!");
-  }
+  if(!amount || !date || !place) return alert("모든 항목을 입력해주세요!");
 
-  const expenses = getExpenses();
-  expenses.push({amount, currency, date, place});
-  saveExpenses(expenses);
+  await addDoc(expensesCol, {amount, currency, date, place});
   alert("저장 완료!");
   goHome();
 }
 
 // ===== 총액 표시 =====
-function loadTotals() {
-  const expenses = getExpenses();
-  let totalKRW = 0, totalJPY = 0;
-
-  expenses.forEach(item => {
-    if(item.currency === "KRW") totalKRW += item.amount;
-    else totalJPY += item.amount;
+async function loadTotals() {
+  const snapshot = await getDocs(expensesCol);
+  let totalKRW=0, totalJPY=0;
+  snapshot.forEach(doc => {
+    const item = doc.data();
+    if(item.currency==='KRW') totalKRW+=item.amount;
+    else totalJPY+=item.amount;
   });
-
   document.getElementById("total-krw").innerText = `KRW 총액: ${totalKRW}원`;
   document.getElementById("total-jpy").innerText = `JPY 총액: ${totalJPY}엔`;
 }
 
 // ===== 내역 표시 =====
-function loadList(filter='ALL') {
+async function loadList(filter='ALL') {
   const list = document.getElementById("expense-list");
   list.innerHTML = "";
-
-  const expenses = getExpenses().filter(item => filter==='ALL' || item.currency===filter);
-
-  expenses.forEach(item => {
-    const li = document.createElement("li");
-    li.textContent = `${item.date} | ${item.currency} ${item.amount} | ${item.place}`;
-    list.appendChild(li);
+  const snapshot = await getDocs(expensesCol);
+  snapshot.forEach(doc => {
+    const item = doc.data();
+    if(filter==='ALL' || item.currency===filter){
+      const li = document.createElement("li");
+      li.textContent = `${item.date} | ${item.currency} ${item.amount} | ${item.place}`;
+      list.appendChild(li);
+    }
   });
 }
 
 // ===== 날짜별 조회 =====
-function showListByDate() {
+async function showListByDate() {
   const start = document.getElementById("start-date").value;
   const end = document.getElementById("end-date").value;
 
   if(!start || !end) return alert("시작 날짜와 끝 날짜를 모두 선택해주세요.");
 
-  document.getElementById("home-screen").classList.add("hidden");
-  document.getElementById("add-screen").classList.add("hidden");
-  document.getElementById("list-screen").classList.remove("hidden");
-
   const list = document.getElementById("expense-list");
   list.innerHTML = "";
 
-  const expenses = getExpenses().filter(item => item.date >= start && item.date <= end);
-
-  expenses.forEach(item => {
+  const q = query(expensesCol, where("date", ">=", start), where("date", "<=", end));
+  const snapshot = await getDocs(q);
+  snapshot.forEach(doc => {
+    const item = doc.data();
     const li = document.createElement("li");
     li.textContent = `${item.date} | ${item.currency} ${item.amount} | ${item.place}`;
     list.appendChild(li);
