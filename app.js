@@ -10,6 +10,7 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
+
 // ===== 화면 전환 =====
 function goHome() {
   document.getElementById("add-screen").classList.add("hidden");
@@ -22,8 +23,6 @@ function showAdd() {
   document.getElementById("home-screen").classList.add("hidden");
   document.getElementById("list-screen").classList.add("hidden");
   document.getElementById("add-screen").classList.remove("hidden");
-
-  // 날짜 자동 입력
   document.getElementById("date").value = new Date().toISOString().slice(0, 10);
 }
 
@@ -31,7 +30,6 @@ function showList() {
   document.getElementById("home-screen").classList.add("hidden");
   document.getElementById("add-screen").classList.add("hidden");
   document.getElementById("list-screen").classList.remove("hidden");
-
   loadList();
 }
 
@@ -58,12 +56,7 @@ function saveExpense() {
 
   const expenses = getExpenses();
 
-  expenses.push({
-    amount: Number(amount),
-    currency,
-    date,
-    place
-  });
+  expenses.push({ amount: Number(amount), currency, date, place });
 
   saveExpenses(expenses);
   alert("저장 완료!");
@@ -101,4 +94,3 @@ function loadList() {
     list.appendChild(li);
   });
 }
-
