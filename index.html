@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>여행비용 계산기</title>
+
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>여행비용 계산기</h1>
+
+        <!-- 홈 화면 -->
+        <div id="home-screen">
+            <div class="totals">
+                <p id="total-krw">KRW 총액: 0원</p>
+                <p id="total-jpy">JPY 총액: 0엔</p>
+            </div>
+
+            <button onclick="showAdd()">지출 추가</button>
+            <button onclick="showList()">지출 내역 보기</button>
+        </div>
+
+        <!-- 지출 추가 화면 -->
+        <div id="add-screen" class="hidden">
+            <h2>지출 추가</h2>
+
+            <input id="amount" type="number" placeholder="금액" />
+            <select id="currency">
+                <option value="KRW">KRW</option>
+                <option value="JPY">JPY</option>
+            </select>
+            <input id="date" type="date" />
+            <input id="place" type="text" placeholder="사용처" />
+
+            <button onclick="saveExpense()">저장하기</button>
+            <button onclick="goHome()">뒤로가기</button>
+        </div>
+
+        <!-- 내역 화면 -->
+        <div id="list-screen" class="hidden">
+            <h2>지출 내역</h2>
+            <ul id="expense-list"></ul>
+            <button onclick="goHome()">뒤로가기</button>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+
+    <!-- PWA 등록 -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("service-worker.js");
+        }
+    </script>
+</body>
+</html>
