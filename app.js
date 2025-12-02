@@ -1,3 +1,15 @@
+// ===== 서비스 워커 등록 =====
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/travle-app/service-worker.js')
+      .then(registration => {
+        console.log('ServiceWorker registered:', registration);
+      })
+      .catch(error => {
+        console.log('ServiceWorker registration failed:', error);
+      });
+  });
+}
 // ===== 화면 전환 =====
 function goHome() {
   document.getElementById("add-screen").classList.add("hidden");
@@ -89,3 +101,4 @@ function loadList() {
     list.appendChild(li);
   });
 }
+
