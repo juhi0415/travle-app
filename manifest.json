@@ -1,19 +1,14 @@
 {
   "name": "여행비용 계산기",
-  "short_name": "여행비용",
-  "start_url": "./index.html",
+  "short_name": "TravelCalc",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#f5f5f5",
   "theme_color": "#2b7a78",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "apple-icon.png",
       "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
       "type": "image/png"
     }
   ]
