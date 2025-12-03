@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>온라인 여행비용 계산기</title>
+<title>여행비용 계산기</title>
 
 <link rel="stylesheet" href="style.css" />
 <link rel="manifest" href="manifest.json" />
@@ -26,6 +26,7 @@
         <button onclick="showDateFilter()">날짜별 보기</button>
         <button onclick="showList('KRW')">KRW만 보기</button>
         <button onclick="showList('JPY')">JPY만 보기</button>
+        <button onclick="showList('ALL')">전체 보기</button>
     </div>
 
     <!-- 날짜 선택 화면 -->
@@ -36,7 +37,7 @@
         <button onclick="goHome()">뒤로</button>
     </div>
 
-    <!-- 지출 추가 화면 -->
+    <!-- 지출 추가/수정 화면 -->
     <div id="add-screen" class="hidden">
         <h2>지출 추가 / 수정</h2>
         <input id="amount" type="number" placeholder="금액" />
@@ -81,6 +82,15 @@ const db = firebase.firestore();
 </script>
 
 <script src="app.js"></script>
+
+<!-- Service Worker 등록 -->
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+    .then(() => console.log("SW 등록 성공"))
+    .catch((err) => console.log("SW 등록 실패", err));
+}
+</script>
 
 </body>
 </html>
