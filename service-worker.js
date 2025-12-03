@@ -1,13 +1,11 @@
-const CACHE_NAME = 'travel-app-cache-v1';
+const CACHE_NAME = 'travel-app-cache-v2'; // v1 → v2로 버전 올림
 const FILES_TO_CACHE = [
   '/',
   '/index.html',
   '/style.css',
   '/app.js',
   '/manifest.json',
-  '/service-worker.js',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/service-worker.js'
 ];
 
 self.addEventListener('install', event => {
@@ -17,22 +15,29 @@ self.addEventListener('install', event => {
       return cache.addAll(FILES_TO_CACHE);
     })
   );
-  self.skipWaiting();
+  self.skipWaiting(); // 바로 활성화
 });
 
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keyList =>
+    caches.keys().then(keys =>
       Promise.all(
-        keyList.map(key => key !== CACHE_NAME ? caches.delete(key) : null)
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            console.log('Removing old cache:', key);
+            return caches.delete(key);
+          }
+        })
       )
     )
   );
-  self.clients.claim();
+  self.clients.claim(); // 새 SW 적용
 });
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
+    })
   );
 });
