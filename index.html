@@ -4,15 +4,12 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>온라인 여행비용 계산기</title>
-
 <link rel="stylesheet" href="style.css" />
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#2b7a78" />
 </head>
-
 <body>
 <div class="container">
-
     <h1>온라인 여행비용 계산기</h1>
 
     <!-- 홈 화면 -->
@@ -32,7 +29,7 @@
         <h2>날짜별 지출 보기</h2>
         <input type="date" id="filter-date" />
         <button onclick="viewByDate()">조회하기</button>
-        <button onclick="goHome()">뒤로가기</button>
+        <button onclick="goHome()">뒤로</button>
     </div>
 
     <!-- 지출 추가 화면 -->
@@ -45,7 +42,7 @@
         </select>
         <input id="date" type="date" />
         <input id="place" type="text" placeholder="사용처" />
-        <button onclick="saveExpense()">저장하기</button>
+        <button id="save-btn">저장하기</button>
         <button onclick="goHome()">뒤로가기</button>
     </div>
 
@@ -63,30 +60,18 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-  const firebaseConfig = {
-      apiKey: "AIzaSyC39VtjT_othwi_WIS_S4cdOH2CKnDyrZY",
-      authDomain: "travle-app-9c1ee.firebaseapp.com",
-      projectId: "travle-app-9c1ee",
-      storageBucket: "travle-app-9c1ee.firebasestorage.app",
-      messagingSenderId: "469444862658",
-      appId: "1:469444862658:web:8cd5b52dd0f78e0c93915b"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+const firebaseConfig = {
+    apiKey: "AIzaSyC39VtjT_othwi_WIS_S4cdOH2CKnDyrZY",
+    authDomain: "travle-app-9c1ee.firebaseapp.com",
+    projectId: "travle-app-9c1ee",
+    storageBucket: "travle-app-9c1ee.firebasestorage.app",
+    messagingSenderId: "469444862658",
+    appId: "1:469444862658:web:8cd5b52dd0f78e0c93915b"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 </script>
 
-<!-- app.js -->
 <script src="app.js"></script>
-
-<!-- Service Worker 등록 -->
-<script>
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-    .then(() => console.log("SW 등록 성공"))
-    .catch((err) => console.log("SW 등록 실패", err));
-}
-</script>
-
 </body>
 </html>
