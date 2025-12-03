@@ -8,10 +8,12 @@
 <link rel="stylesheet" href="style.css" />
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#2b7a78" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
-
 <body>
 <div class="container">
+
     <h1>여행비용 계산기</h1>
 
     <!-- 홈 화면 -->
@@ -20,11 +22,11 @@
             <p id="total-krw">KRW 총액: 0원</p>
             <p id="total-jpy">JPY 총액: 0엔</p>
         </div>
-
         <button onclick="showAdd()">지출 추가</button>
         <button onclick="showDateFilter()">날짜별 보기</button>
         <button onclick="showList('KRW')">KRW만 보기</button>
         <button onclick="showList('JPY')">JPY만 보기</button>
+        <button onclick="showList('ALL')">전체 보기</button>
     </div>
 
     <!-- 날짜 선택 화면 -->
@@ -37,7 +39,7 @@
 
     <!-- 지출 추가 화면 -->
     <div id="add-screen" class="hidden">
-        <h2>지출 추가</h2>
+        <h2>지출 추가 / 수정</h2>
         <input id="amount" type="number" placeholder="금액" />
         <select id="currency">
             <option value="KRW">KRW</option>
@@ -49,7 +51,7 @@
         <button onclick="goHome()">뒤로가기</button>
     </div>
 
-    <!-- 지출 내역 화면 -->
+    <!-- 내역 화면 -->
     <div id="list-screen" class="hidden">
         <h2>지출 내역</h2>
         <ul id="expense-list"></ul>
@@ -59,11 +61,9 @@
 </div>
 
 <script src="app.js"></script>
-
-<!-- PWA 서비스워커 등록 -->
 <script>
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/travle-app/service-worker.js')
+    navigator.serviceWorker.register('/service-worker.js')
         .then(() => console.log('Service Worker 등록 완료'))
         .catch(err => console.log('Service Worker 등록 실패', err));
 }
