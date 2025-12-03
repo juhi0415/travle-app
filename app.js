@@ -1,4 +1,4 @@
-// ===== 화면 전환 =====
+// 화면 전환
 function goHome() {
     document.getElementById("add-screen").classList.add("hidden");
     document.getElementById("list-screen").classList.add("hidden");
@@ -6,7 +6,6 @@ function goHome() {
     loadTotals();
 }
 
-// 화면 전환
 function showAdd() {
     document.getElementById("home-screen").classList.add("hidden");
     document.getElementById("list-screen").classList.add("hidden");
@@ -34,23 +33,22 @@ function showListByDate() {
     }
 }
 
-// ===== 데이터 관리 =====
+// 데이터 관리
 function getExpenses() {
     return JSON.parse(localStorage.getItem("expenses") || "[]");
 }
-
 function saveExpenses(data) {
     localStorage.setItem("expenses", JSON.stringify(data));
 }
 
-// ===== 저장 기능 =====
+// 저장 기능
 function saveExpense() {
     const amount = document.getElementById("amount").value;
     const currency = document.getElementById("currency").value;
     const date = document.getElementById("date").value;
     const place = document.getElementById("place").value;
 
-    if(!amount || !date || !place) {
+    if(!amount || !date || !place){
         alert("모든 항목을 입력해주세요!");
         return;
     }
@@ -62,7 +60,7 @@ function saveExpense() {
     goHome();
 }
 
-// ===== 홈 화면: 총액 표시 =====
+// 총액 표시
 function loadTotals() {
     const expenses = getExpenses();
     let totalKRW = 0;
@@ -77,16 +75,12 @@ function loadTotals() {
     document.getElementById("total-jpy").innerText = `JPY 총액: ${totalJPY.toLocaleString()}엔`;
 }
 
-// ===== 내역 표시 =====
+// 내역 표시
 function loadList(filter="ALL") {
     const list = document.getElementById("expense-list");
     list.innerHTML = "";
     const expenses = getExpenses();
-
-    const filtered = expenses.filter(e=>{
-        if(filter==="ALL") return true;
-        return e.currency===filter;
-    });
+    const filtered = expenses.filter(e=>filter==="ALL"?true:e.currency===filter);
 
     filtered.forEach((item,index)=>{
         const li = document.createElement("li");
@@ -97,7 +91,7 @@ function loadList(filter="ALL") {
     });
 }
 
-// ===== 수정 / 삭제 =====
+// 수정/삭제
 function editExpense(index) {
     const expenses = getExpenses();
     const item = expenses[index];
@@ -107,7 +101,7 @@ function editExpense(index) {
     document.getElementById("date").value = item.date;
     document.getElementById("place").value = item.place;
 
-    // 기존 항목 삭제 후 저장 시 새로 추가됨
+    // 기존 항목 삭제
     deleteExpense(index,false);
 }
 
@@ -118,7 +112,7 @@ function deleteExpense(index,refresh=true){
     if(refresh) loadList();
 }
 
-// ===== 날짜별 보기 =====
+// 날짜별 보기
 function showListByFilterDate(date){
     const list = document.getElementById("expense-list");
     list.innerHTML = "";
@@ -127,14 +121,3 @@ function showListByFilterDate(date){
     filtered.forEach((item,index)=>{
         const li = document.createElement("li");
         li.innerHTML = `${item.date} | ${item.currency} ${item.amount.toLocaleString()} | ${item.place} 
-        <button onclick="editExpense(${index})" class="small-btn">✏️</button>
-        <button onclick="deleteExpense(${index})" class="small-btn">🗑️</button>`;
-        list.appendChild(li);
-    });
-    document.getElementById("home-screen").classList.add("hidden");
-    document.getElementById("add-screen").classList.add("hidden");
-    document.getElementById("list-screen").classList.remove("hidden");
-}
-
-// ===== 초기화 =====
-loadTotals();
