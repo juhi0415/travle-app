@@ -4,16 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>여행비용 계산기</title>
+
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2b7a78">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 <div class="container">
 
     <h1>여행비용 계산기</h1>
 
-    <!-- 홈 화면 -->
     <div id="home-screen">
         <div class="totals">
             <p id="total-krw">KRW 총액: 0원</p>
@@ -26,7 +28,6 @@
         <button onclick="showList('ALL')">전체 보기</button>
     </div>
 
-    <!-- 날짜별 화면 -->
     <div id="date-filter-screen" class="hidden">
         <h2>날짜별 지출</h2>
         <input type="date" id="filter-date">
@@ -35,7 +36,6 @@
         <ul id="date-filter-list"></ul>
     </div>
 
-    <!-- 지출 추가/수정 화면 -->
     <div id="add-screen" class="hidden">
         <h2>지출 추가 / 수정</h2>
         <input id="amount" type="number" placeholder="금액">
@@ -49,7 +49,6 @@
         <button onclick="goHome()">뒤로가기</button>
     </div>
 
-    <!-- 내역 화면 -->
     <div id="list-screen" class="hidden">
         <h2>지출 내역</h2>
         <ul id="expense-list"></ul>
@@ -59,5 +58,16 @@
 </div>
 
 <script src="app.js"></script>
+
+<!-- PWA: 서비스워커 등록 -->
+<script>
+if('serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('Service Worker 등록 완료'))
+        .catch(err => console.log('Service Worker 등록 실패', err));
+    });
+}
+</script>
 </body>
 </html>
