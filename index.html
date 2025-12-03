@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>여행비용 계산기</title>
+<title>온라인 여행비용 계산기</title>
 
 <link rel="stylesheet" href="style.css" />
 <link rel="manifest" href="manifest.json" />
@@ -13,7 +13,7 @@
 <body>
 <div class="container">
 
-    <h1>여행비용 계산기</h1>
+    <h1>온라인 여행비용 계산기</h1>
 
     <!-- 홈 화면 -->
     <div id="home-screen">
@@ -21,12 +21,10 @@
             <p id="total-krw">KRW 총액: 0원</p>
             <p id="total-jpy">JPY 총액: 0엔</p>
         </div>
-
         <button onclick="showAdd()">지출 추가</button>
         <button onclick="showDateFilter()">날짜별 보기</button>
         <button onclick="showList('KRW')">KRW만 보기</button>
         <button onclick="showList('JPY')">JPY만 보기</button>
-        <button onclick="showList('ALL')">전체 보기</button>
     </div>
 
     <!-- 날짜 선택 화면 -->
@@ -34,22 +32,19 @@
         <h2>날짜별 지출 보기</h2>
         <input type="date" id="filter-date" />
         <button onclick="viewByDate()">조회하기</button>
-        <button onclick="goHome()">뒤로</button>
+        <button onclick="goHome()">뒤로가기</button>
     </div>
 
-    <!-- 지출 추가/수정 화면 -->
+    <!-- 지출 추가 화면 -->
     <div id="add-screen" class="hidden">
         <h2>지출 추가 / 수정</h2>
         <input id="amount" type="number" placeholder="금액" />
-
         <select id="currency">
             <option value="KRW">KRW</option>
             <option value="JPY">JPY</option>
         </select>
-
         <input id="date" type="date" />
         <input id="place" type="text" placeholder="사용처" />
-
         <button onclick="saveExpense()">저장하기</button>
         <button onclick="goHome()">뒤로가기</button>
     </div>
@@ -68,19 +63,20 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-const firebaseConfig = {
-    apiKey: "AIzaSyC39VtjT_othwi_WIS_S4cdOH2CKnDyrZY",
-    authDomain: "travle-app-9c1ee.firebaseapp.com",
-    projectId: "travle-app-9c1ee",
-    storageBucket: "travle-app-9c1ee.firebasestorage.app",
-    messagingSenderId: "469444862658",
-    appId: "1:469444862658:web:8cd5b52dd0f78e0c93915b"
-};
+  const firebaseConfig = {
+      apiKey: "AIzaSyC39VtjT_othwi_WIS_S4cdOH2CKnDyrZY",
+      authDomain: "travle-app-9c1ee.firebaseapp.com",
+      projectId: "travle-app-9c1ee",
+      storageBucket: "travle-app-9c1ee.firebasestorage.app",
+      messagingSenderId: "469444862658",
+      appId: "1:469444862658:web:8cd5b52dd0f78e0c93915b"
+  };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 </script>
 
+<!-- app.js -->
 <script src="app.js"></script>
 
 <!-- Service Worker 등록 -->
