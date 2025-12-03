@@ -1,118 +1,165 @@
-// Firebase 모듈 import
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+let editId = null; // 수정 모드 감지용
 
-// Firebase 초기화
-const firebaseConfig = {
-  apiKey: "AIzaSyC39VtjT_othwi_WIS_S4cdOH2CKnDyrZY",
-  authDomain: "travle-app-9c1ee.firebaseapp.com",
-  projectId: "travle-app-9c1ee",
-  storageBucket: "travle-app-9c1ee.firebasestorage.app",
-  messagingSenderId: "469444862658",
-  appId: "1:469444862658:web:8cd5b52dd0f78e0c93915b"
-};
+// 1000단위 콤마
+function formatNumber(num) {
+    return num.toLocaleString("ko-KR");
+}
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const expensesCol = collection(db, "expenses");
-
-// ===== 화면 전환 =====
+// 화면 전환
 function goHome() {
-  document.getElementById("home-screen").classList.remove("hidden");
-  document.getElementById("add-screen").classList.add("hidden");
-  document.getElementById("list-screen").classList.add("hidden");
-  loadTotals();
+    hideAll();
+    document.getElementById("home-screen").classList.remove("hidden");
+    loadTotals();
+}
+
+function hideAll() {
+    document.getElementById("add-screen").classList.add("hidden");
+    document.getElementById("list-screen").classList.add("hidden");
+    document.getElementById("home-screen").classList.add("hidden");
+    document.getElementById("date-filter-screen").classList.add("hidden");
 }
 
 function showAdd() {
-  document.getElementById("home-screen").classList.add("hidden");
-  document.getElementById("list-screen").classList.add("hidden");
-  document.getElementById("add-screen").classList.remove("hidden");
-
-  document.getElementById("date").value = new Date().toISOString().slice(0, 10);
+    hideAll();
+    document.getElementById("add-screen").classList.remove("hidden");
+    document.getElementById("date").value = new Date().toISOString().slice(0, 10);
+    editId = null;
 }
 
-function showList(filter='ALL') {
-  document.getElementById("home-screen").classList.add("hidden");
-  document.getElementById("add-screen").classList.add("hidden");
-  document.getElementById("list-screen").classList.remove("hidden");
-
-  loadList(filter);
+// 날짜 선택 화면
+function showDateFilter() {
+    hideAll();
+    document.getElementById("date-filter-screen").classList.remove("hidden");
 }
 
-// ===== 지출 저장 =====
-async function saveExpense() {
-  const amount = Number(document.getElementById("amount").value);
-  const currency = document.getElementById("currency").value;
-  const date = document.getElementById("date").value;
-  const place = document.getElementById("place").value;
+// Firestore 저장
+function saveExpense() {
+    const amount = Number(document.getElementById("amount").value);
+    const currency = document.getElementById("currency").value;
+    const date = document.getElementById("date").value;
+    const place = document.getElementById("place").value;
 
-  if(!amount || !date || !place) {
-    alert("모든 항목을 입력해주세요!");
-    return;
-  }
-
-  await addDoc(expensesCol, { amount, currency, date, place });
-  alert("저장 완료!");
-  goHome();
-}
-
-// ===== 총액 표시 =====
-async function loadTotals() {
-  const snapshot = await getDocs(expensesCol);
-  let totalKRW = 0, totalJPY = 0;
-  snapshot.forEach(doc => {
-    const item = doc.data();
-    if(item.currency === 'KRW') totalKRW += item.amount;
-    else totalJPY += item.amount;
-  });
-  document.getElementById("total-krw").innerText = `KRW 총액: ${totalKRW}원`;
-  document.getElementById("total-jpy").innerText = `JPY 총액: ${totalJPY}엔`;
-}
-
-// ===== 내역 표시 =====
-async function loadList(filter='ALL') {
-  const snapshot = await getDocs(expensesCol);
-  const list = document.getElementById("expense-list");
-  list.innerHTML = "";
-
-  snapshot.forEach(doc => {
-    const item = doc.data();
-    if(filter === 'ALL' || item.currency === filter) {
-      const li = document.createElement("li");
-      li.textContent = `${item.date} | ${item.currency} ${item.amount} | ${item.place}`;
-      list.appendChild(li);
+    if (!amount || !date || !place) {
+        alert("모든 항목을 입력하세요.");
+        return;
     }
-  });
+
+    if (editId) {
+        // 수정
+        db.collection("expenses").doc(editId).update({
+            amount, currency, date, place
+        });
+        alert("수정 완료!");
+    } else {
+        // 추가
+        db.collection("expenses").add({
+            amount, currency, date, place
+        });
+        alert("저장 완료!");
+    }
+
+    goHome();
 }
 
-// ===== 날짜별 조회 =====
-async function showListByDate() {
-  const start = document.getElementById("start-date").value;
-  const end = document.getElementById("end-date").value;
+// 총합 불러오기
+function loadTotals() {
+    db.collection("expenses").get().then(snapshot => {
+        let totalKRW = 0;
+        let totalJPY = 0;
 
-  if(!start || !end) return alert("시작 날짜와 끝 날짜를 선택하세요.");
+        snapshot.forEach(doc => {
+            const item = doc.data();
+            if (item.currency === "KRW") totalKRW += item.amount;
+            else totalJPY += item.amount;
+        });
 
-  const q = query(expensesCol, where("date", ">=", start), where("date", "<=", end));
-  const snapshot = await getDocs(q);
+        document.getElementById("total-krw").innerText =
+            `KRW 총액: ${formatNumber(totalKRW)}원`;
 
-  const list = document.getElementById("expense-list");
-  list.innerHTML = "";
-
-  snapshot.forEach(doc => {
-    const item = doc.data();
-    const li = document.createElement("li");
-    li.textContent = `${item.date} | ${item.currency} ${item.amount} | ${item.place}`;
-    list.appendChild(li);
-  });
+        document.getElementById("total-jpy").innerText =
+            `JPY 총액: ${formatNumber(totalJPY)}엔`;
+    });
 }
 
-// ===== 초기 로드 =====
-loadTotals();
+// 리스트 표시
+function showList(filter) {
+    hideAll();
+    document.getElementById("list-screen").classList.remove("hidden");
 
-// ===== 함수 전역으로 노출 =====
-window.goHome = goHome;
-window.showAdd = showAdd;
-window.showList = showList;
-window.saveExpense = saveExpense;
-window.showListByDate = showListByDate;
+    db.collection("expenses")
+        .orderBy("date", "desc")
+        .get()
+        .then(snapshot => {
+            const list = document.getElementById("expense-list");
+            list.innerHTML = "";
+
+            snapshot.forEach(doc => {
+                const item = doc.data();
+                if (filter !== "ALL" && item.currency !== filter) return;
+
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    ${item.date} |
+                    ${item.currency} ${formatNumber(item.amount)} |
+                    ${item.place}
+                    <button onclick="editExpense('${doc.id}')">✏ 수정</button>
+                    <button onclick="deleteExpense('${doc.id}')">🗑 삭제</button>
+                `;
+                list.appendChild(li);
+            });
+        });
+}
+
+// 삭제
+function deleteExpense(id) {
+    if (confirm("정말 삭제할까요?")) {
+        db.collection("expenses").doc(id).delete();
+        showList("ALL");
+    }
+}
+
+// 수정
+function editExpense(id) {
+    db.collection("expenses").doc(id).get().then(doc => {
+        const item = doc.data();
+        editId = id;
+
+        document.getElementById("amount").value = item.amount;
+        document.getElementById("currency").value = item.currency;
+        document.getElementById("date").value = item.date;
+        document.getElementById("place").value = item.place;
+
+        hideAll();
+        document.getElementById("add-screen").classList.remove("hidden");
+    });
+}
+
+// 날짜별 조회
+function viewByDate() {
+    const date = document.getElementById("filter-date").value;
+    if (!date) return alert("날짜를 선택하세요");
+
+    hideAll();
+    document.getElementById("list-screen").classList.remove("hidden");
+
+    db.collection("expenses")
+        .where("date", "==", date)
+        .get()
+        .then(snapshot => {
+            const list = document.getElementById("expense-list");
+            list.innerHTML = "";
+
+            snapshot.forEach(doc => {
+                const item = doc.data();
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    ${item.date} |
+                    ${item.currency} ${formatNumber(item.amount)} |
+                    ${item.place}
+                    <button onclick="editExpense('${doc.id}')">✏ 수정</button>
+                    <button onclick="deleteExpense('${doc.id}')">🗑 삭제</button>
+                `;
+                list.appendChild(li);
+            });
+        });
+}
