@@ -1,30 +1,21 @@
-const CACHE_NAME = "travle-app-cache-v1";
-const urlsToCache = [
-    "/",
-    "/index.html",
-    "/style.css",
-    "/app.js",
-    "/manifest.json"
-];
+const CACHE_NAME = 'travel-app-cache-v1';
+const FILES_TO_CACHE = ['/', '/index.html', '/style.css', '/app.js', '/manifest.json', '/service-worker.js'];
 
-// 설치
-self.addEventListener("install", event => {
+self.addEventListener('install', event => {
+    self.skipWaiting();
+    event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE)));
+});
+
+self.addEventListener('activate', event => {
     event.waitUntil(
-        caches.open(CACHE_NAME)
-        .then(cache => cache.addAll(urlsToCache))
-        .then(() => self.skipWaiting())
+        caches.keys().then(keys =>
+            Promise.all(keys.map(key => caches.delete(key)))
+        ).then(() => self.clients.claim())
     );
 });
 
-// 활성화
-self.addEventListener("activate", event => {
-    event.waitUntil(self.clients.claim());
-});
-
-// 요청 캐싱
-self.addEventListener("fetch", event => {
+self.addEventListener('fetch', event => {
     event.respondWith(
-        caches.match(event.request)
-        .then(response => response || fetch(event.request))
+        caches.match(event.request).then(response => response || fetch(event.request))
     );
 });
