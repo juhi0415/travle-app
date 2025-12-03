@@ -19,23 +19,14 @@
             <p id="total-jpy">JPY 총액: 0엔</p>
         </div>
         <button onclick="showAdd()">지출 추가</button>
-        <button onclick="showDateFilter()">날짜별 보기</button>
+        <button onclick="showList('ALL')">전체 보기</button>
         <button onclick="showList('KRW')">KRW만 보기</button>
         <button onclick="showList('JPY')">JPY만 보기</button>
-        <button onclick="showList('ALL')">전체 보기</button>
-    </div>
-
-    <!-- 날짜별 필터 -->
-    <div id="date-filter-screen" class="hidden">
-        <h2>날짜별 지출 보기</h2>
-        <input type="date" id="filter-date">
-        <button onclick="viewByDate()">조회하기</button>
-        <button onclick="goHome()">뒤로가기</button>
     </div>
 
     <!-- 지출 추가 화면 -->
     <div id="add-screen" class="hidden">
-        <h2>지출 추가</h2>
+        <h2>지출 추가 / 수정</h2>
         <input id="amount" type="number" placeholder="금액">
         <select id="currency">
             <option value="KRW">KRW</option>
@@ -55,26 +46,6 @@
     </div>
 </div>
 
-<script src="app.js"></script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('Service Worker 등록 완료:', registration);
-        registration.onupdatefound = () => {
-          const newWorker = registration.installing;
-          newWorker.onstatechange = () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              alert('새 버전이 설치되었습니다. 앱을 다시 열어주세요.');
-            }
-          };
-        };
-      })
-      .catch(err => console.log('Service Worker 등록 실패:', err));
-  });
-}
-</script>
+<script src="app.js?v=1"></script> <!-- 항상 최신 반영을 위해 쿼리 v=1 -->
 </body>
 </html>
