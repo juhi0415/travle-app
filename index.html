@@ -10,9 +10,9 @@
 </head>
 <body>
 <div class="container">
+
     <h1>여행비용 계산기</h1>
 
-    <!-- 홈 화면 -->
     <div id="home-screen">
         <div class="totals">
             <p id="total-krw">KRW 총액: 0원</p>
@@ -22,10 +22,8 @@
         <button onclick="showList('ALL')">전체 보기</button>
         <button onclick="showList('KRW')">KRW만 보기</button>
         <button onclick="showList('JPY')">JPY만 보기</button>
-        <button onclick="showListByDate()">날짜별 보기</button>
     </div>
 
-    <!-- 지출 추가 화면 -->
     <div id="add-screen" class="hidden">
         <h2>지출 추가 / 수정</h2>
         <input id="amount" type="number" placeholder="금액" />
@@ -39,21 +37,20 @@
         <button onclick="goHome()">뒤로가기</button>
     </div>
 
-    <!-- 내역 화면 -->
     <div id="list-screen" class="hidden">
         <h2>지출 내역</h2>
         <ul id="expense-list"></ul>
         <button onclick="goHome()">뒤로가기</button>
     </div>
+
 </div>
 
-<script src="app.js"></script>
-
+<script src="app.js?v=1.0.0"></script>
 <script>
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('Service Worker 등록 완료'))
-        .catch(err => console.log('Service Worker 등록 실패', err));
+    .then(() => console.log('Service Worker 등록 완료'))
+    .catch(err => console.log('Service Worker 등록 실패', err));
 }
 </script>
 </body>
