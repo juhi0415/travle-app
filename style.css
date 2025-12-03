@@ -42,3 +42,16 @@ li {
   margin-left: 5px;
   border-radius: 4px;
 }
+.small-btn{
+    padding:2px 6px;
+    font-size:14px;
+    margin-left:4px;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+    background:#ddd;
+}
+.small-btn:hover{
+    background:#ccc;
+}
+
